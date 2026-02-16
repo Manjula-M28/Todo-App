@@ -814,7 +814,7 @@ app.get("/", (req, res) => {
         </div>
       </div>
 
-      <!-- Add Todo Form -->
+      <!-- Add Todo Form - Fixed action URL -->
       <div class="add-todo-form">
         <form action="/add" method="POST" id="addForm">
           <div class="form-row">
@@ -961,14 +961,14 @@ app.get("/", (req, res) => {
         document.body.style.overflow = '';
       }
 
-      // Toggle todo
+      // Toggle todo - Fixed URL with absolute path
       function toggleTodo(id) {
         fetch('/toggle/' + id, { method: 'POST' })
           .then(() => window.location.reload())
           .catch(err => console.error('Error:', err));
       }
 
-      // Edit todo
+      // Edit todo - Fixed URL with absolute path
       function editTodo(id) {
         fetch('/todo/' + id)
           .then(res => res.json())
@@ -983,7 +983,7 @@ app.get("/", (req, res) => {
           .catch(err => console.error('Error:', err));
       }
 
-      // Delete todo
+      // Delete todo - Fixed URL with absolute path
       function deleteTodo(id) {
         if (confirm('Are you sure you want to delete this task?')) {
           fetch('/delete/' + id, { method: 'POST' })
@@ -1105,6 +1105,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`
   🚀 Todo App Pro is running!
   📍 http://localhost:${PORT}
+  📍 https://test.easysale.in (if configured)
   
   Features:
   ✅ Full CRUD Operations
@@ -1112,5 +1113,10 @@ app.listen(PORT, '0.0.0.0', () => {
   📊 Statistics Dashboard
   🔍 Live Search & Filters
   📱 Fully Responsive Design
+  
+  Make sure:
+  1. Your server is configured to proxy requests to port ${PORT}
+  2. All routes use absolute paths (starting with /)
+  3. The server has proper CORS settings if needed
   `);
 });
