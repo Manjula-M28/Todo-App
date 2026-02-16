@@ -864,7 +864,7 @@ app.post("/delete/:id", (req, res) => {
 });
 
 // ----------- Start App -----------
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3500;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
   🚀 Todo App Pro is running!
