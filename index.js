@@ -816,7 +816,7 @@ app.get("/", (req, res) => {
 
       <!-- Add Todo Form - Fixed action URL -->
       <div class="add-todo-form">
-        <form action="/add" method="POST" id="addForm">
+        <form action="add" method="POST" id="addForm">
           <div class="form-row">
             <div class="form-group">
               <label>📝 Task Description</label>
@@ -961,36 +961,37 @@ app.get("/", (req, res) => {
         document.body.style.overflow = '';
       }
 
-      // Toggle todo - Fixed URL with absolute path
-      function toggleTodo(id) {
-        fetch('/toggle/' + id, { method: 'POST' })
-          .then(() => window.location.reload())
-          .catch(err => console.error('Error:', err));
-      }
+     // Toggle todo
+function toggleTodo(id) {
+  fetch('toggle/' + id, { method: 'POST' })
+    .then(() => window.location.reload())
+    .catch(err => console.error('Error:', err));
+}
 
-      // Edit todo - Fixed URL with absolute path
-      function editTodo(id) {
-        fetch('/todo/' + id)
-          .then(res => res.json())
-          .then(todo => {
-            document.getElementById('editText').value = todo.text;
-            document.getElementById('editCategory').value = todo.category;
-            document.getElementById('editPriority').value = todo.priority;
-            document.getElementById('editDueDate').value = todo.dueDate;
-            document.getElementById('editForm').action = '/update/' + id;
-            openModal();
-          })
-          .catch(err => console.error('Error:', err));
-      }
+// Edit todo
+function editTodo(id) {
+  fetch('todo/' + id)
+    .then(res => res.json())
+    .then(todo => {
+      document.getElementById('editText').value = todo.text;
+      document.getElementById('editCategory').value = todo.category;
+      document.getElementById('editPriority').value = todo.priority;
+      document.getElementById('editDueDate').value = todo.dueDate;
+      document.getElementById('editForm').action = 'update/' + id;
+      openModal();
+    })
+    .catch(err => console.error('Error:', err));
+}
 
-      // Delete todo - Fixed URL with absolute path
-      function deleteTodo(id) {
-        if (confirm('Are you sure you want to delete this task?')) {
-          fetch('/delete/' + id, { method: 'POST' })
-            .then(() => window.location.reload())
-            .catch(err => console.error('Error:', err));
-        }
-      }
+// Delete todo
+function deleteTodo(id) {
+  if (confirm('Are you sure you want to delete this task?')) {
+    fetch('delete/' + id, { method: 'POST' })
+      .then(() => window.location.reload())
+      .catch(err => console.error('Error:', err));
+  }
+}
+
 
       // Close modal when clicking outside
       window.onclick = function(event) {
