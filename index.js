@@ -720,7 +720,7 @@ app.get("/", async (req, res) => {
 
                 <!-- Add Todo Form -->
                 <div class="add-todo-form">
-                    <form action="/add" method="POST" id="addForm">
+                    <form action="add" method="POST" id="addForm">
                         <div class="form-row">
                             <div class="form-group">
                                 <label>📝 Task Description</label>
@@ -754,7 +754,7 @@ app.get("/", async (req, res) => {
 
                 <!-- Filters -->
                 <div class="filters-section">
-                    <form action="/" method="GET" id="filterForm">
+                    <form action="" method="GET" id="filterForm">
                         <div class="filter-row">
                             <div class="filter-group">
                                 <label>🔍 Search</label>
@@ -865,7 +865,7 @@ app.get("/", async (req, res) => {
 
                 // Toggle todo
                 function toggleTodo(id) {
-                    fetch('/toggle/' + id, { method: 'POST' })
+                    fetch('toggle/' + id, { method: 'POST' })
                         .then(() => window.location.reload())
                         .catch(err => console.error('Error:', err));
                 }
@@ -879,7 +879,7 @@ app.get("/", async (req, res) => {
                             document.getElementById('editCategory').value = todo.category;
                             document.getElementById('editPriority').value = todo.priority;
                             document.getElementById('editDueDate').value = todo.dueDate.split('T')[0];
-                            document.getElementById('editForm').action = '/update/' + id;
+                            document.getElementById('editForm').action = 'update/' + id;
                             openModal();
                         })
                         .catch(err => console.error('Error:', err));
@@ -888,7 +888,7 @@ app.get("/", async (req, res) => {
                 // Delete todo
                 function deleteTodo(id) {
                     if (confirm('Are you sure you want to delete this task?')) {
-                        fetch('/delete/' + id, { method: 'POST' })
+                        fetch('delete/' + id, { method: 'POST' })
                             .then(() => window.location.reload())
                             .catch(err => console.error('Error:', err));
                     }
