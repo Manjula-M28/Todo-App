@@ -1,6 +1,7 @@
 const express = require("express");
 const mysql = require('mysql2');
 const app = express();
+<<<<<<< HEAD
 
 // ========== MySQL CONNECTION SETUP ==========
 // ========== CORRECT MySQL CONNECTION ==========
@@ -26,6 +27,106 @@ async function initializeDatabase() {
         // Create database if not exists
         await promisePool.query('CREATE DATABASE IF NOT EXISTS todoapp');
         await promisePool.query('USE todoapp');
+=======
+const BASE='/todo';
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Todos array with more fields
+let todos = [
+  {
+    id: 1,
+    text: "Complete project documentation",
+    completed: false,
+    category: "work",
+    priority: "high",
+    dueDate: "2024-02-20",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    text: "Buy groceries for dinner",
+    completed: false,
+    category: "shopping",
+    priority: "medium",
+    dueDate: "2024-02-18",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    text: "Morning workout",
+    completed: true,
+    category: "health",
+    priority: "high",
+    dueDate: "2024-02-17",
+    createdAt: new Date().toISOString()
+  }
+];
+
+let nextId = 4;
+
+// ----------- Home Page -----------
+app.get(BASE + "/", (req, res) => {
+  const searchTerm = req.query.search || '';
+  const filterCategory = req.query.category || 'all';
+  const filterPriority = req.query.priority || 'all';
+  const filterStatus = req.query.status || 'all';
+  
+  // Filter todos based on search and filters
+  let filteredTodos = todos.filter(todo => {
+    // Search filter
+    const matchesSearch = todo.text.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Category filter
+    const matchesCategory = filterCategory === 'all' || todo.category === filterCategory;
+    
+    // Priority filter
+    const matchesPriority = filterPriority === 'all' || todo.priority === filterPriority;
+    
+    // Status filter
+    const matchesStatus = filterStatus === 'all' || 
+      (filterStatus === 'completed' && todo.completed) ||
+      (filterStatus === 'pending' && !todo.completed);
+    
+    return matchesSearch && matchesCategory && matchesPriority && matchesStatus;
+  });
+
+  // Generate todo list HTML
+  let list = filteredTodos.map(todo => {
+    const priorityColor = {
+      high: '#ef4444',
+      medium: '#f59e0b',
+      low: '#3b82f6'
+    }[todo.priority];
+
+    const categoryColors = {
+      work: '#8b5cf6',
+      personal: '#ec4899',
+      shopping: '#10b981',
+      health: '#f97316'
+    }[todo.category] || '#6b7280';
+
+    const isOverdue = todo.dueDate && new Date(todo.dueDate) < new Date() && !todo.completed;
+    const dueDateClass = isOverdue ? 'overdue' : '';
+
+    return `
+    <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+      <div class="todo-content">
+        <div class="todo-header">
+          <span class="todo-text ${todo.completed ? 'completed-text' : ''}">
+            ${todo.text}
+          </span>
+          <div class="todo-badges">
+            <span class="badge priority" style="background: ${priorityColor}20; color: ${priorityColor}">
+              ${todo.priority}
+            </span>
+            <span class="badge category" style="background: ${categoryColors}20; color: ${categoryColors}">
+              ${todo.category}
+            </span>
+          </div>
+        </div>
+>>>>>>> 7f0d8a0 (fixed routes for todo edit api)
         
         // Create todos table
         await promisePool.query(`
@@ -462,6 +563,7 @@ app.get("/", async (req, res) => {
                     margin-bottom: 8px;
                 }
 
+<<<<<<< HEAD
                 .todo-text {
                     font-size: clamp(0.9rem, 3vw, 1.1rem);
                     font-weight: 500;
@@ -795,6 +897,15 @@ app.get("/", async (req, res) => {
                 <ul class="todos-list">
                     ${list || '<li class="empty-state">✨ No tasks found. Add a new task to get started!</li>'}
                 </ul>
+=======
+      <!-- Add Todo Form - Fixed action URL -->
+      <div class="add-todo-form">
+        <form action="/todo/add" method="POST" id="addForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>📝 Task Description</label>
+              <input type="text" name="text" placeholder="Enter your task..." required>
+>>>>>>> 7f0d8a0 (fixed routes for todo edit api)
             </div>
 
             <!-- Edit Modal -->
@@ -1005,14 +1116,97 @@ app.get("/test-db", async (req, res) => {
             result: result[0].result,
             database: 'todoapp'
         });
+<<<<<<< HEAD
     } catch (error) {
         res.status(500).json({ 
             error: '❌ Database connection failed',
             details: error.message 
+=======
+        if (field.type === 'text') {
+          let timeout;
+          field.addEventListener('input', () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+              document.getElementById('filterForm').submit();
+            }, 500);
+          });
+        }
+      });
+
+      // Modal functions
+      function openModal() {
+        document.getElementById('editModal').classList.add('active');
+        // Prevent body scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        document.getElementById('editModal').classList.remove('active');
+        // Restore body scrolling
+        document.body.style.overflow = '';
+      }
+
+     // Toggle todo
+function toggleTodo(id) {
+  fetch('/todo/toggle/' + id, { method: 'POST' })
+    .then(() => window.location.reload())
+    .catch(err => console.error('Error:', err));
+}
+
+// Edit todo
+function editTodo(id) {
+  fetch('todo/' + id)
+    .then(res => res.json())
+    .then(todo => {
+      document.getElementById('editText').value = todo.text;
+      document.getElementById('editCategory').value = todo.category;
+      document.getElementById('editPriority').value = todo.priority;
+      document.getElementById('editDueDate').value = todo.dueDate;
+      document.getElementById('editForm').action = '/todo/update/' + id;
+      openModal();
+    })
+    .catch(err => console.error('Error:', err));
+}
+
+// Delete todo
+function deleteTodo(id) {
+  if (confirm('Are you sure you want to delete this task?')) {
+    fetch('/todo/delete/' + id, { method: 'POST' })
+      .then(() => window.location.reload())
+      .catch(err => console.error('Error:', err));
+  }
+}
+
+
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target === modal) {
+          closeModal();
+        }
+      }
+
+      // Handle touch events for mobile
+      document.addEventListener('touchstart', function(e) {
+        // Prevent zoom on double tap
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      // Ensure date inputs work properly on mobile
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(input => {
+          input.addEventListener('touchstart', function(e) {
+            this.showPicker();
+          });
+>>>>>>> 7f0d8a0 (fixed routes for todo edit api)
         });
     }
 });
 
+<<<<<<< HEAD
 // ========== START SERVER ==========
 const PORT = process.env.PORT || 3500;
 app.listen(PORT, '0.0.0.0', () => {
@@ -1038,3 +1232,95 @@ app.listen(PORT, '0.0.0.0', () => {
     ====================================
     `);
 });
+=======
+// ----------- Add Todo -----------
+app.post(BASE + "/add", (req, res) => {
+  const { text, category, priority, dueDate } = req.body;
+  
+  if (!text || !category || !priority || !dueDate) {
+    return res.redirect("/");
+  }
+
+  const newTodo = {
+    id: nextId++,
+    text: text,
+    completed: false,
+    category: category,
+    priority: priority,
+    dueDate: dueDate,
+    createdAt: new Date().toISOString()
+  };
+  
+  todos.push(newTodo);
+  res.redirect("/todo");
+});
+
+// ----------- Get Todo (for editing) -----------
+app.get(BASE + "/todo/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const todo = todos.find(t => t.id === id);
+  
+  if (todo) {
+    res.json(todo);
+  } else {
+    res.status(404).json({ error: "Todo not found" });
+  }
+});
+
+// ----------- Toggle Todo -----------
+app.post(BASE + "/toggle/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const todo = todos.find(t => t.id === id);
+  
+  if (todo) {
+    todo.completed = !todo.completed;
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ error: "Todo not found" });
+  }
+});
+
+// ----------- Update Todo -----------
+app.post(BASE + "/update/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const todo = todos.find(t => t.id === id);
+  
+  if (todo) {
+    todo.text = req.body.text;
+    todo.category = req.body.category;
+    todo.priority = req.body.priority;
+    todo.dueDate = req.body.dueDate;
+  }
+  
+  res.redirect("/");
+});
+
+// ----------- Delete Todo -----------
+app.post(BASE + "/delete/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  todos = todos.filter(t => t.id !== id);
+  res.json({ success: true });
+});
+
+// ----------- Start App -----------
+const PORT = process.env.PORT || 3500;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`
+  🚀 Todo App Pro is running!
+  📍 http://localhost:${PORT}
+  📍 https://test.easysale.in (if configured)
+  
+  Features:
+  ✅ Full CRUD Operations
+  🎨 Categories & Priority
+  📊 Statistics Dashboard
+  🔍 Live Search & Filters
+  📱 Fully Responsive Design
+  
+  Make sure:
+  1. Your server is configured to proxy requests to port ${PORT}
+  2. All routes use absolute paths (starting with /)
+  3. The server has proper CORS settings if needed
+  `);
+});
+>>>>>>> 7f0d8a0 (fixed routes for todo edit api)
