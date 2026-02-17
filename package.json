@@ -1,11 +1,14 @@
 {
-  "name": "todo-app",
+  "name": "todo-app-mysql",
   "version": "1.0.0",
+  "description": "Todo App with MySQL",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mysql2": "^3.17.2"
   }
 }
